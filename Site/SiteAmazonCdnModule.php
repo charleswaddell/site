@@ -372,10 +372,8 @@ class SiteAmazonCdnModule extends SiteCdnModule
 		} else {
 			if ($expires === null) {
 				$uri = $this->s3->getObjectUrl(
-					array(
-						'Bucket' => $this->bucket,
-						'Key'    => $filename
-					)
+					$this->bucket,
+					$filename
 				);
 			} else {
 				$command = $this->s3->getCommand(

@@ -271,8 +271,6 @@ class Site
             // media
             'media.days_to_delete_threshold' => 7,
             // in days
-            // JWPlayer
-            'jwplayer.key' => null,
             // Expiry dates for the privateer data deleter
             'expiry.contact_messages' => '1 year',
             // P3P headers. See https://en.wikipedia.org/wiki/P3P

@@ -138,7 +138,7 @@ class SiteVideoMedia extends SiteMedia
         $jwplayer = $this->getMediaPlayerDisplay();
         $jwplayer->setMedia($this);
         $jwplayer->swf_uri = 'packages/jwplayer/jwplayer.flash.swf';
-        $jwplayer->key = $app->config->jwplayer->key;
+        //$jwplayer->key = $app->config->jwplayer->key;
 
         $jwplayer->menu_title = $app->config->site->title;
         $jwplayer->menu_link = $app->getBaseHref();
@@ -193,7 +193,7 @@ class SiteVideoMedia extends SiteMedia
 
     public function getMediaPlayerDisplay()
     {
-        return new SiteJwPlayerMediaDisplay('video' . $this->id);
+        return new SiteVideoJsMediaDisplay('video' . $this->id);
     }
 
     /**

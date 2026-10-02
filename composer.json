@@ -73,8 +73,7 @@
     "ext-redis": "Allow connecting applications to a Redis data store.",
     "pelago/emogrifier": "Inlines CSS in multipart mail messages.",
     "psr/log": "Enables logging using the PSR logging interface.",
-    "silverorange/admin": "Enables admin components",
-    "silverorange/jwplayer": "Enables video player support."
+    "silverorange/admin": "Enables admin components"
   },
   "autoload": {
     "classmap": [

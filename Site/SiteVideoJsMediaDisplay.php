@@ -1,14 +1,13 @@
 <?php
 
 /**
- * Display class for SiteMedia using JWPlayer.
+ * Display class for SiteMedia using Video.js.
  *
- * @copyright 2013-2016 silverorange
+ * @copyright 2026 silverorange
  * @license   http://www.gnu.org/copyleft/lesser.html LGPL License 2.1
  */
-class SiteJwPlayerMediaDisplay extends SwatControl
+class SiteVideoJsMediaDisplay extends SwatControl
 {
-    public $key;
     public $valid_mime_types;
     public $start_position = 0;
     public $record_end_point = false;
@@ -57,9 +56,13 @@ class SiteJwPlayerMediaDisplay extends SwatControl
         $yui = new SwatYUI(['swf', 'event', 'cookie']);
         $this->html_head_entry_set->addEntrySet($yui->getHtmlHeadEntrySet());
 
-        $this->addJavascript('packages/jwplayer/jwplayer.js');
+        // TODO: Make this work better
+        $this->html_head_entry_set->addEntry(
+            new SpecialHeadEntry('packages/site/javascript/videojs/video.js'),
+        );
+
         $this->addJavascript(
-            'packages/site/javascript/site-jw-player-media-display.js'
+            'packages/site/javascript/site-video-js-media-display.js'
         );
 
         $this->addStylesheet(
@@ -196,13 +199,22 @@ class SiteJwPlayerMediaDisplay extends SwatControl
             );
         }
 
-        if ($this->key !== null) {
-            Swat::displayInlineJavaScript(sprintf(
-                'jwplayer.key = %s;',
-                SwatString::quoteJavaScriptString($this->key)
-            ));
+        echo '<video-player>';
+        echo '<video-skin style="display: block; width: 100%; aspect-ratio: 16 / 9;">';
+
+        foreach ($this->sources as $source) {
+            $video_div = new SwatHtmlTag('video');
+            $video_div->playsinline = true;
+            $video_div->src = $source['uri'];
+
+            $video_div->open();
+            $video_div->close();
         }
 
+        echo '</video-skin>';
+        echo '</video-player>';
+
+        /*
         echo '<div class="video-player-container">';
 
         $container_div = new SwatHtmlTag('div');
@@ -227,6 +239,7 @@ class SiteJwPlayerMediaDisplay extends SwatControl
         echo '</div>';
 
         Swat::displayInlineJavaScript($this->getJavascript());
+        */
     }
 
     public function getJavascriptVariableName()

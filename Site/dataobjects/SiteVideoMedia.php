@@ -133,24 +133,19 @@ class SiteVideoMedia extends SiteMedia
         return $audio;
     }
 
-    public function getMediaPlayer(SiteApplication $app)
+    public function getMediaPlayer(SiteApplication $app, bool $use_new = false)
     {
-        $jwplayer = $this->getMediaPlayerDisplay();
-        $jwplayer->setMedia($this);
-        $jwplayer->swf_uri = 'packages/jwplayer/jwplayer.flash.swf';
-        $jwplayer->key = $app->config->jwplayer->key;
-
-        $jwplayer->menu_title = $app->config->site->title;
-        $jwplayer->menu_link = $app->getBaseHref();
+        $player = $this->getMediaPlayerDisplay($app, $use_new);
+        $player->setMedia($this);
 
         if ($app->session->isActive()) {
-            $jwplayer->setSession($app->session);
+            $player->setSession($app->session);
         }
 
         $expires = ($this->media_set->private) ? '1 day' : null;
 
         if ($this->has_hls) {
-            $jwplayer->addSource(
+            $player->addSource(
                 $app->cdn->getUri(
                     $this->getHlsFilePath(),
                     $expires
@@ -165,7 +160,7 @@ class SiteVideoMedia extends SiteMedia
 
             $binding = $this->getEncodingBinding($encoding->shortname);
             if ($binding->on_cdn && $binding->width > 0) {
-                $jwplayer->addSource(
+                $player->addSource(
                     $app->cdn->getUri(
                         $this->getFilePath($encoding->shortname),
                         $expires
@@ -180,7 +175,7 @@ class SiteVideoMedia extends SiteMedia
             $dimensions = $this->image->image_set->dimensions;
             foreach ($dimensions as $dimension) {
                 if ($this->image->hasDimension($dimension->shortname)) {
-                    $jwplayer->addImage(
+                    $player->addImage(
                         $this->image->getUri($dimension->shortname),
                         $this->image->getWidth($dimension->shortname)
                     );
@@ -188,12 +183,23 @@ class SiteVideoMedia extends SiteMedia
             }
         }
 
-        return $jwplayer;
+        return $player;
     }
 
-    public function getMediaPlayerDisplay()
+    public function getMediaPlayerDisplay(SiteApplication $app, $use_new)
     {
-        return new SiteJwPlayerMediaDisplay('video' . $this->id);
+        if ($use_new) {
+            return new SiteVideoJsMediaDisplay('videojs' . $this->id);
+        }
+        $player = new SiteJwPlayerMediaDisplay('video' . $this->id);
+
+        $player->swf_uri = 'packages/jwplayer/jwplayer.flash.swf';
+        $player->key = $app->config->jwplayer->key;
+
+        $player->menu_title = $app->config->site->title;
+        $player->menu_link = $app->getBaseHref();
+
+        return $player;
     }
 
     /**
